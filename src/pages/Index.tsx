@@ -33,8 +33,8 @@ const Index = () => {
     setIsLoading(true);
     try {
       const [todayRes, allRes] = await Promise.all([
-        fetch(`${API_BASE}/problems/today`),
-        fetch(`${API_BASE}/problems`),
+        fetch(`${API_BASE}/today-reviews`),
+        fetch(`${API_BASE}/problem`),
       ]);
       
       const todayData = await todayRes.json();
@@ -52,7 +52,7 @@ const Index = () => {
 
   const handleAddProblem = async (link: string) => {
     try {
-      const res = await fetch(`${API_BASE}/problems`, {
+      const res = await fetch(`${API_BASE}/problem`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ link }),
@@ -71,7 +71,7 @@ const Index = () => {
 
   const handleReviewProblem = async (id: string) => {
     try {
-      const res = await fetch(`${API_BASE}/problems/review/${id}`, {
+      const res = await fetch(`${API_BASE}/review/${id}`, {
         method: "PUT",
       });
       
