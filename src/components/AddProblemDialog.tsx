@@ -15,16 +15,17 @@ import { LinkIcon } from "lucide-react";
 interface AddProblemDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onAdd: (link: string) => void;
+  onAdd: (link: string) => Promise<void>;
+  isLoading?: boolean;
 }
 
-export const AddProblemDialog = ({ open, onOpenChange, onAdd }: AddProblemDialogProps) => {
+export const AddProblemDialog = ({ open, onOpenChange, onAdd, isLoading }: AddProblemDialogProps) => {
   const [link, setLink] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (link.trim()) {
-      onAdd(link.trim());
+      await onAdd(link.trim());
       setLink("");
     }
   };
@@ -63,14 +64,23 @@ export const AddProblemDialog = ({ open, onOpenChange, onAdd }: AddProblemDialog
               variant="outline"
               onClick={() => onOpenChange(false)}
               className="border-border/50"
+              disabled={isLoading}
             >
               Cancel
             </Button>
             <Button
               type="submit"
               className="bg-gradient-primary hover:opacity-90 shadow-elegant"
+              disabled={isLoading}
             >
-              Add Problem
+              {isLoading ? (
+                <>
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
+                  Adding...
+                </>
+              ) : (
+                "Add Problem"
+              )}
             </Button>
           </DialogFooter>
         </form>

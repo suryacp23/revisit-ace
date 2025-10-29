@@ -13,10 +13,11 @@ interface ProblemCardProps {
     createdAt: string;
   };
   onReview: (id: string) => void;
+  isReviewing?: boolean;
   style?: React.CSSProperties;
 }
 
-export const ProblemCard = ({ problem, onReview, style }: ProblemCardProps) => {
+export const ProblemCard = ({ problem, onReview, isReviewing, style }: ProblemCardProps) => {
   const getDaysUntilReview = () => {
     if (!problem.nextReviewDate) return null;
     const days = Math.ceil(
@@ -86,9 +87,19 @@ export const ProblemCard = ({ problem, onReview, style }: ProblemCardProps) => {
         <Button
           onClick={() => onReview(problem._id)}
           className="bg-gradient-primary hover:opacity-90 shadow-elegant transition-all hover:shadow-lg flex-shrink-0"
+          disabled={isReviewing}
         >
-          <CheckCircle2 className="w-4 h-4 mr-2" />
-          Mark Reviewed
+          {isReviewing ? (
+            <>
+              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
+              Reviewing...
+            </>
+          ) : (
+            <>
+              <CheckCircle2 className="w-4 h-4 mr-2" />
+              Mark Reviewed
+            </>
+          )}
         </Button>
       </div>
     </Card>

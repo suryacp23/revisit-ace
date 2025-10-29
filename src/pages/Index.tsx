@@ -20,6 +20,8 @@ const Index = () => {
   const [allProblems, setAllProblems] = useState<Problem[]>([]);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [isAddingProblem, setIsAddingProblem] = useState(false);
+  const [reviewingProblemId, setReviewingProblemId] = useState<string | null>(null);
   const [activeView, setActiveView] = useState<"today" | "all">("today");
 
   // Replace with your actual API endpoint
@@ -51,6 +53,9 @@ const Index = () => {
   };
 
   const handleAddProblem = async (link: string) => {
+    if (isAddingProblem) return;
+    
+    setIsAddingProblem(true);
     try {
       const res = await fetch(`${API_BASE}/problem`, {
         method: "POST",
@@ -66,10 +71,15 @@ const Index = () => {
     } catch (error) {
       toast.error("Failed to add problem");
       console.error(error);
+    } finally {
+      setIsAddingProblem(false);
     }
   };
 
   const handleReviewProblem = async (id: string) => {
+    if (reviewingProblemId) return;
+    
+    setReviewingProblemId(id);
     try {
       const res = await fetch(`${API_BASE}/review/${id}`, {
         method: "PUT",
@@ -82,6 +92,8 @@ const Index = () => {
     } catch (error) {
       toast.error("Failed to review problem");
       console.error(error);
+    } finally {
+      setReviewingProblemId(null);
     }
   };
 
@@ -194,6 +206,7 @@ const Index = () => {
                 key={problem._id}
                 problem={problem}
                 onReview={handleReviewProblem}
+                isReviewing={reviewingProblemId === problem._id}
                 style={{ animationDelay: `${idx * 50}ms` }}
               />
             ))}
@@ -205,6 +218,7 @@ const Index = () => {
         open={isAddDialogOpen}
         onOpenChange={setIsAddDialogOpen}
         onAdd={handleAddProblem}
+        isLoading={isAddingProblem}
       />
     </div>
   );
